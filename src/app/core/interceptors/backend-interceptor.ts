@@ -18,59 +18,75 @@ export class BackendInterceptor implements HttpInterceptor {
         const paramsArray = req.params.keys().map(x => ({ [x]: req.params.get(x) }));
 
         if (req.method === "GET") {
-            return of(new HttpResponse({
-                status: 200,
-                body: {
-                    "offset": 0,
-                    "limit": 100,
-                    "total": tableData.length,
-                    "result": tableData
-                }
-            }));
+            return this._getRequest()
         }
 
         if (req.method === "POST") {
-            let id = tableData && tableData.length ? +tableData[tableData.length - 1].id + 1 : 1;
-            let body = Object.assign({}, req.body, { id: id })
-            tableData.push(body);
-            return of(new HttpResponse({
-                status: 200,
-                body: { "message": "Ok" }
-
-            }));
+            return this._postRequest(req)
         }
 
         if (req.method === "PUT") {
-            let id = paramsArray[0].id;
-            let body = Object.assign({}, req.body, { id: id })
-            tableData = tableData.map((data) => {
-                if (+data.id == +id) {
-                    data = body
-                }
-                return data
-            })
-            return of(new HttpResponse({
-                status: 200,
-                body: body
-            }));
+            let id = +paramsArray[0].id;
+            return this._putRequest(req, id)
         }
 
         if (req.method === "DELETE") {
-            let id = paramsArray[0].id;
-            let data = tableData.find((val) => { return +val.id == +id });
-            if (data) {
-                let index = tableData.indexOf(data);
-                if (index > -1) {
-                    tableData.splice(index, 1);
-                    tableData = [...tableData];
-                }
-            }
-            return of(new HttpResponse({
-                status: 200,
-                body: { "message": "Ok" }
-
-            }));
+            let id = +paramsArray[0].id;
+            return this._deleteRequest(id)
         }
         next.handle(req)
+    }
+
+    private _getRequest(): Observable<HttpEvent<any>> {
+        return of(new HttpResponse({
+            status: 200,
+            body: {
+                "offset": 0,
+                "limit": 100,
+                "total": tableData.length,
+                "result": tableData
+            }
+        }));
+    }
+
+    private _postRequest(req: HttpRequest<any>): Observable<HttpEvent<any>> {
+        let id = tableData && tableData.length ? +tableData[tableData.length - 1].id + 1 : 1;
+        let body = Object.assign({}, req.body, { id: id })
+        tableData.push(body);
+        return of(new HttpResponse({
+            status: 200,
+            body: { "message": "Ok" }
+
+        }));
+    }
+
+    private _putRequest(req: HttpRequest<any>, id: number): Observable<HttpEvent<any>> {
+        let body = Object.assign({}, req.body, { id: id })
+        tableData = tableData.map((data) => {
+            if (+data.id === +id) {
+                data = body
+            }
+            return data
+        })
+        return of(new HttpResponse({
+            status: 200,
+            body: body
+        }));
+    }
+
+    private _deleteRequest(id: number): Observable<HttpEvent<any>> {
+        let data = tableData.find((val) => { return +val.id == +id });
+        if (data) {
+            let index = tableData.indexOf(data);
+            if (index > -1) {
+                tableData.splice(index, 1);
+                tableData = [...tableData];
+            }
+        }
+        return of(new HttpResponse({
+            status: 200,
+            body: { "message": "Ok" }
+
+        }));
     }
 }

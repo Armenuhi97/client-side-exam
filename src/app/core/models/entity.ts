@@ -14,6 +14,6 @@ export interface TableData {
     startDateTime: number;
     reportingDateTime: number;
 }
-export interface Message{
-    message:string
+export interface SucceedServerResponse {
+    message: string
 }

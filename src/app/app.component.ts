@@ -23,6 +23,7 @@ export class AppComponent implements OnInit, OnDestroy {
   public total: number;
   public validateForm: FormGroup;
   public tableData: TableData[] = [];
+
   constructor(
     private _tableDataService: TableDataService,
     private _nzMessages: NzMessageService,
@@ -37,9 +38,11 @@ export class AppComponent implements OnInit, OnDestroy {
   public addDataInTable(): void {
     this.isVisible = true;
   }
+  
   public formatDate(date: number): string {
     return date ? this._datePipe.transform(new Date(date), 'YYYY-MM-dd HH:mm') : null
   }
+
   public deleteData(data: TableData): void {
     this._tableDataService.deleteData(data.id).pipe(takeUntil(this.unsubscribe$),
       switchMap(() => {
@@ -79,9 +82,11 @@ export class AppComponent implements OnInit, OnDestroy {
     })
     this.validateForm.patchValue(value)
   }
+
   private _checkIsExistDate(date: number): Date | null {
     return date ? new Date(date) : null
   }
+
   public onSave(): void {
     if (this.validateForm.invalid) {
       this._nzMessages.error('Validate error');
@@ -106,7 +111,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this._sendResponce(sendObject).pipe(takeUntil(this.unsubscribe$)).subscribe()
   }
 
-  private _setDateInMiliseconds(time: Date): number | null{
+  private _setDateInMiliseconds(time: Date): number | null {
     return time ? time.getTime() : null
   }
 
@@ -141,6 +146,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.editIndex = null;
     this.validateForm.reset()
   }
+
   ngOnDestroy(): void {
     this.unsubscribe$.next();
     this.unsubscribe$.complete();

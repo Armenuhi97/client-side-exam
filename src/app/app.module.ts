@@ -3,7 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AppComponent } from './app.component';
 import { SharedModule } from './core/shared/shared.module';
-import { BackendInterceptor } from './core/interceptors/backend-interceptors';
+import { BackendInterceptor } from './core/interceptors/backend-interceptor';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { en_US, NZ_I18N } from 'ng-zorro-antd/i18n';
 
